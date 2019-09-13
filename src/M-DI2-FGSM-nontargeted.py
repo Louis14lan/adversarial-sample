@@ -21,7 +21,7 @@ EPSILON = 16
 class Model():
 
     def __init__(self):
-        from models import inception_resnet_v1  # facenet model
+        import inception_resnet_v1  # facenet model
         self.network = inception_resnet_v1
 
         self.image_batch = tf.placeholder(tf.uint8, shape=[None, IMAGE_SIZE, IMAGE_SIZE, 3], name='images')
@@ -95,13 +95,15 @@ class Model():
             prelogits, _ = self.network.inference(image, 1.0, False, bottleneck_layer_size=embedding_SIZE)
             embeddings = tf.nn.l2_normalize(prelogits, 1, 1e-10, name='embeddings')
 
-            objective = tf.sqrt(tf.reduce_sum(tf.square(embeddings - victim_embeddings), 1))
-            noise, = tf.gradients(objective, image)
+            embeddings = tf.reshape(embeddings[0], [512, 1])
+            objective = tf.reduce_mean(tf.matmul(victim_embeddings, embeddings))  # to be maximized
+            # objective = tf.sqrt(tf.reduce_sum(tf.square(embeddings - victim_embeddings), 1))
 
+            noise, = tf.gradients(objective, image)
             noise = noise / tf.reduce_mean(tf.abs(noise), [1, 2, 3], keep_dims=True)
             noise = 0.9 * grad + noise
 
-            adv = tf.clip_by_value(orig_image + tf.sign(noise), lower_bound, upper_bound)
+            adv = tf.clip_by_value(orig_image - tf.sign(noise), lower_bound, upper_bound)
             return adv, noise
 
         input = tf.to_float(self.image_batch)
