@@ -32,7 +32,7 @@ numpy==1.16.2
 opencv-python==4.1.0.25
 paddlepaddle-gpu==1.5.1.post97
 pandas==0.25.0
-Pillow==6.1.0
+Pillow==6.2.0
 prettytable==0.7.2
 protobuf==3.9.1
 psutil==5.6.3
