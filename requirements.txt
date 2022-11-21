@@ -49,7 +49,7 @@ six==1.12.0
 stadv==0.2.1
 tensorboard==1.11.0
 tensorflow-estimator==1.14.0
-tensorflow-gpu==1.11.0
+tensorflow-gpu==2.9.3
 tensorflow-probability==0.7.0
 termcolor==1.1.0
 tqdm==4.32.1
